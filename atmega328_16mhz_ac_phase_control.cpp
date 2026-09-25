@@ -11,6 +11,8 @@ this library is intended to be use with atmega328 and 168
 #define MIN_PHASE_DELAY 1
 #define TRIAC_PULSE_TICKS 2
 
+static volatile int current_phase_delay = MAX_PHASE_DELAY;
+
 void atmega328_16mhz_ac_phase_controlClass::init()
 {
   DDRD &= ~(1 << PD2);
@@ -19,13 +21,14 @@ void atmega328_16mhz_ac_phase_controlClass::init()
   DDRB |= (1 << PB1);
   PORTB &= ~(1 << PB1);
 
-  TIMSK1 = 0x02;
   TCCR1A = 0x00;
   TCCR1B = 0x00;
   TCNT1 = 0x00;
 
+  TIMSK1 = (1 << TOIE1) | (1 << OCIE1A);
+
   EICRA &= ~((1 << ISC01) | (1 << ISC00));
-  EICRA |= (1 << ISC01) | (1 << ISC00);
+  EICRA |= (1 << ISC01);
 
   EIMSK |= (1 << INT0);
 
@@ -38,7 +41,6 @@ void atmega328_16mhz_ac_phase_controlClass::uninit()
 
   DDRD = 0x00;
   PORTD = 0x00;
-
   DDRB = 0x00;
   PORTB = 0x00;
 
@@ -66,7 +68,7 @@ void atmega328_16mhz_ac_phase_controlClass::set_ac_power(int value)
     value = MAX_PHASE_DELAY;
   }
 
-  OCR1A = value;
+  current_phase_delay = value;
 }
 
 ISR(INT0_vect)
@@ -75,6 +77,9 @@ ISR(INT0_vect)
 
   TCCR1B = 0x00;
   TCNT1 = 0x00;
+  OCR1A = current_phase_delay;
+
+  TIFR1 |= (1 << OCF1A) | (1 << TOV1);
 
   TCCR1B = 0x04;
 }
@@ -83,16 +88,18 @@ ISR(TIMER1_COMPA_vect)
 {
   PORTB |= (1 << PB1);
 
-  TCNT1 = 0x00;
-  OCR1A = TRIAC_PULSE_TICKS;
+  OCR1A = TCNT1 + TRIAC_PULSE_TICKS;
 
-  TCCR1B = 0x04;
+  TIMSK1 &= ~(1 << OCIE1A);
 }
 
 ISR(TIMER1_OVF_vect)
 {
   PORTB &= ~(1 << PB1);
+
   TCCR1B = 0x00;
+
+  TIMSK1 |= (1 << OCIE1A);
 }
 
 atmega328_16mhz_ac_phase_controlClass atmega328_16mhz_ac_phase_control;

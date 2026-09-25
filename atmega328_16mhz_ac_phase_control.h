@@ -1,5 +1,7 @@
-#ifndef atmega328_16mhz_ac_phase_control_h
-#define atmega328_16mhz_ac_phase_control_h
+#ifndef ATMEGA328_16MHZ_AC_PHASE_CONTROL_H
+#define ATMEGA328_16MHZ_AC_PHASE_CONTROL_H
+
+#include <Arduino.h>
 
 class atmega328_16mhz_ac_phase_controlClass
 {

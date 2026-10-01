@@ -488,7 +488,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "dimmer.kicad_pro",
+    "filename": "dimmer-pcb.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -656,8 +656,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "dimmer.kicad_sch",
-        "name": "Root",
+        "filename": "dimmer-pcb.kicad_sch",
+        "name": "dimmer-pcb",
         "uuid": "5daeae09-3001-4f2f-87f2-5cc963082acc"
       }
     ],
@@ -667,7 +667,7 @@
   "sheets": [
     [
       "5daeae09-3001-4f2f-87f2-5cc963082acc",
-      "Root"
+      "dimmer-pcb"
     ]
   ],
   "text_variables": {},

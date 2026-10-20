@@ -17,31 +17,18 @@ int powerStages[10] = {
 void setup() {
   Serial.begin(115200);
   atmega328_16mhz_ac_phase_control.init();
-  Serial.println("AC Phase Control Initialized.");
 }
 
 void loop() {
   // Step forward through stages (Bright to Dim)
   for(int i = 0; i < 10; i++) {
     atmega328_16mhz_ac_phase_control.set_ac_power(powerStages[i]);
-    
-    Serial.print("Stage: ");
-    Serial.print(i);
-    Serial.print(" | Ticks: ");
-    Serial.println(powerStages[i]);
-    
     delay(1000);
   }
 
   // Step backward through stages (Dim to Bright)
   for(int i = 9; i >= 0; i--) {
     atmega328_16mhz_ac_phase_control.set_ac_power(powerStages[i]);
-    
-    Serial.print("Stage: ");
-    Serial.print(i);
-    Serial.print(" | Ticks: ");
-    Serial.println(powerStages[i]);
-    
     delay(1000);
   }
 }
